@@ -2,7 +2,6 @@ import mysql from 'mysql2/promise';
 
 import { config } from '../config/env.js';
 
-// createPool no abre conexiones hasta la primera consulta.
 export const pool = mysql.createPool({
   host: config.db.host,
   port: config.db.port,

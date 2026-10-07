@@ -18,6 +18,10 @@ export function errorHandler(err, req, res, next) {
   if (err.type === 'entity.too.large') {
     return res.status(413).json({ error: 'El cuerpo de la petición es demasiado grande' });
   }
+  // Otros errores 4xx de body-parser (charset o encoding no soportado, etc.).
+  if (Number.isInteger(err.status) && err.status >= 400 && err.status <= 499) {
+    return res.status(err.status).json({ error: 'Petición inválida' });
+  }
 
   // Cualquier otro error (incluidos los de MySQL): el detalle queda en el log
   // del servidor y al cliente solo le llega un mensaje genérico.

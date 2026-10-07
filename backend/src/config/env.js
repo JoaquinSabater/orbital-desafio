@@ -1,7 +1,5 @@
 import dotenv from 'dotenv';
 
-// Se carga acá, y no en index.js, porque los imports de ES Modules se evalúan
-// antes que el cuerpo del módulo: el pool necesita las variables ya cargadas.
 dotenv.config({ quiet: true });
 
 const entero = (valor, porDefecto) => {
