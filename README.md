@@ -14,7 +14,9 @@ docker cp database/schema.sql orbital-mysql:/schema.sql
 docker exec orbital-mysql sh -c "mysql -uroot -proot < /schema.sql"
 
 cd backend  && cp .env.example .env && npm install && npm test && npm run dev
-.env: DB_USER=root y DB_PASSWORD=root si usan el contenedor de arriba
+
+# .env: DB_USER=root y DB_PASSWORD=root si usan el contenedor de arriba
+
 cd frontend && cp .env.example .env && npm install && npm run dev
 ```
 
@@ -24,7 +26,7 @@ Con todo andando cargué casos desde el formulario y revisé la tabla: un corpor
 
 La regla que faltaba la implementé así: si el cliente es corporativo y la calificación es 1 o 2, no se aplica el multiplicador (factor 1). Con 3 sí multiplica, el +2 de urgencia se mantiene y la regla no la extendí a VIP porque el comentario no lo dice. Para esto tuve que asumir algo: el método no recibe ningún dato sobre cómo fue la atención, así que interpreté que la calificación es la nota que el cliente le puso. Es el único dato donde "menor a 3" tiene sentido.
 
-Hay tres cosas que me parecieron raras. La regla parece ir al revés de lo que uno esperaría en servicio al cliente (a un corporativo que calificó mal le baja la prioridad en vez de subirla). "Los VIP tienen máxima prioridad" no se cumple si se entiende como que van siempre primero, porque un VIP con calificación 1 queda debajo de un corporativo con 5. Y el tope de 10 nunca se alcanza, porque el máximo posible es 9.5. Las tres las validaría con negocio.
+Hay tres cosas que me parecieron raras. La regla parece ir al revés de lo que uno esperaría en servicio al cliente (a un corporativo que calificó mal le baja la prioridad en vez de subirla). "Los VIP tienen máxima prioridad" no se cumple si se entiende como que van siempre primero, porque un VIP con calificación 1 queda debajo de un corporativo con 5. Y el tope de 10 nunca se alcanza, porque el máximo posible es 9.5.
 
 Migrar de Java a JavaScript no fue traducir línea por línea. En Java el tipo int ya garantiza un número entero; en JavaScript un texto como "abc" pasa la validación de rango del Java tal cual está escrita, y el string "false" cuenta como verdadero y sumaría la urgencia. Por eso valido los tipos de forma estricta y rechazo con 400 cualquier tipo de cliente que no sea VIP, CORPORATIVO o ESTANDAR (el Java lo dejaba pasar con factor 1; es un cambio a propósito). La prioridad la calcula siempre el backend y se redondea a dos decimales, porque 3 por 1.2 da 3.5999999999999996.
 
