@@ -19,5 +19,8 @@ export async function crearAtencion({ calificacionCliente, esUrgente, tipoClient
   if (!respuesta.ok) {
     throw new Error(cuerpo?.error ?? `Error inesperado (HTTP ${respuesta.status})`)
   }
+  if (typeof cuerpo?.prioridad !== 'number' || typeof cuerpo?.factorAplicado !== 'number') {
+    throw new Error('Respuesta inesperada del servidor')
+  }
   return cuerpo
 }
